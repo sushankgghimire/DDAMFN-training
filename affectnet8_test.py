@@ -14,7 +14,7 @@ from tqdm import tqdm
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--aff_path', type=str, default='./data/AffectNet/', help='AfectNet dataset path.')
-    parser.add_argument('--batch_size', type=int, default=128, help='Batch size.')
+    parser.add_argument('--batch_size', type=int, default=32, help='Batch size.')
     parser.add_argument('--workers', default=8, type=int, help='Number of data loading workers.')
     parser.add_argument('--num_head', type=int, default=2, help='Number of attention head.')
     parser.add_argument('--num_class', type=int, default=8, help='Number of class.')

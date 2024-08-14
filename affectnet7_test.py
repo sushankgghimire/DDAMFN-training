@@ -12,12 +12,12 @@ import itertools
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--aff_path', type=str, default='./data/fer_112_112_v2.0/affectnet/', help='AfectNet dataset path.')
-    parser.add_argument('--batch_size', type=int, default=128, help='Batch size.')
+    parser.add_argument('--aff_path', type=str, default='./data/AffectNet/', help='AfectNet dataset path.')
+    parser.add_argument('--batch_size', type=int, default=4, help='Batch size.')
     parser.add_argument('--workers', default=8, type=int, help='Number of data loading workers.')
     parser.add_argument('--num_head', type=int, default=2, help='Number of attention head.')
     parser.add_argument('--num_class', type=int, default=7, help='Number of class.')
-    parser.add_argument('--model_path', default = './checkpoints_ver2.0/affecnet7_epoch19_acc0.671.pth')
+    parser.add_argument('--model_path', default = 'checkpoints_ver2.0/affecnet7_epoch120_acc0.7922.pth')
     return parser.parse_args()
 
 
