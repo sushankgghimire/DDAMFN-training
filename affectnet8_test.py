@@ -18,7 +18,7 @@ def parse_args():
     parser.add_argument('--workers', default=8, type=int, help='Number of data loading workers.')
     parser.add_argument('--num_head', type=int, default=2, help='Number of attention head.')
     parser.add_argument('--num_class', type=int, default=8, help='Number of class.')
-    parser.add_argument('--model_path', default = './checkpoints_ver2.0/affecnet8_epoch25_acc0.6469.pth')
+    parser.add_argument('--model_path', default = './checkpoints_ver2.0/affecnet8_epoch109_acc0.7566.pth')
     return parser.parse_args()
 
 
