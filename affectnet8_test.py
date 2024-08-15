@@ -17,7 +17,6 @@ def parse_args():
     parser.add_argument('--batch_size', type=int, default=32, help='Batch size.')
     parser.add_argument('--workers', default=8, type=int, help='Number of data loading workers.')
     parser.add_argument('--num_head', type=int, default=2, help='Number of attention head.')
-    parser.add_argument('--num_class', type=int, default=8, help='Number of class.')
     parser.add_argument('--model_path', default = './checkpoints_ver2.0/affecnet8_epoch109_acc0.7566.pth')
     return parser.parse_args()
 
@@ -59,14 +58,13 @@ def plot_confusion_matrix(cm, classes,
     plt.tight_layout()
 
 
-class7_names = ['Neutral', 'Happy', 'Sad', 'Surprise', 'Fear', 'Disgust', 'Angry'] 
 class8_names = ['Neutral', 'Happy', 'Sad', 'Surprise', 'Fear', 'Disgust', 'Angry', 'Contempt'] 
 
 def run_test():
     args = parse_args()
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    model = DDAMNet(num_class=args.num_class, num_head=args.num_head, pretrained=False)
+    model = DDAMNet(8, num_head=args.num_head, pretrained=False)
     
     checkpoint = torch.load(args.model_path, map_location=device)
     model.load_state_dict(checkpoint['model_state_dict'])
@@ -79,10 +77,7 @@ def run_test():
         transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                  std=[0.229, 0.224, 0.225])])     
  
-    val_dataset = datasets.ImageFolder(f'{args.aff_path}', transform = data_transforms_val)    # loading statically
-    if args.num_class == 7:   # ignore the 8-th class 
-        idx = [i for i in range(len(val_dataset)) if val_dataset.imgs[i][1] != 7]
-        val_dataset = data.Subset(val_dataset, idx)
+    val_dataset = datasets.ImageFolder(f'{args.aff_path}/val', transform = data_transforms_val)    # loading statically
 
     print('Validation set size:', val_dataset.__len__())
     
@@ -119,25 +114,14 @@ def run_test():
     acc = np.around(acc.numpy(),4)
 
     print("Validation accuracy:%.4f. " % ( acc))
-    if args.num_class == 7: 
-        # Compute confusion matrix
-        matrix = confusion_matrix(all_targets.data.cpu().numpy(), all_predicted.cpu().numpy())
-        np.set_printoptions(precision=2)
-        plt.figure(figsize=(10, 8))
-        # Plot normalized confusion matrix
-        plot_confusion_matrix(matrix, classes=class7_names, normalize=True, title= 'affectnet  Confusion Matrix (acc: %0.2f%%)' %(acc*100))
- 		
-        plt.savefig(os.path.join('checkpoints_ver2.0', "affecnet7"+"_acc"+str(acc)+".png"))
-        plt.close()				
 
-    elif args.num_class == 8:
-        matrix = confusion_matrix(all_targets.data.cpu().numpy(), all_predicted.cpu().numpy())
-        np.set_printoptions(precision=2)
-        plt.figure(figsize=(10, 8))
-        plot_confusion_matrix(matrix, classes=class8_names, normalize=True, title= 'AffectNet Confusion Matrix (acc: %0.2f%%)' %(acc*100))
+    matrix = confusion_matrix(all_targets.data.cpu().numpy(), all_predicted.cpu().numpy())
+    np.set_printoptions(precision=2)
+    plt.figure(figsize=(10, 8))
+    plot_confusion_matrix(matrix, classes=class8_names, normalize=True, title= 'AffectNet Confusion Matrix (acc: %0.2f%%)' %(acc*100))
  		
-        plt.savefig(os.path.join('checkpoints_ver2.0', "affecnet8"+"_acc"+str(acc)+".png"))
-        plt.close()	
+    plt.savefig(os.path.join('checkpoints_ver2.0', "affecnet8"+"_acc"+str(acc)+".png"))
+    plt.close()	
        
 if __name__ == "__main__":
                    
